@@ -28,3 +28,12 @@ variable "app_password" {
   description = "Application user password"
   sensitive   = true
 }
+
+variable "databases" {
+  type = map(object({
+    username = string
+    password = string
+  }))
+
+}
+
