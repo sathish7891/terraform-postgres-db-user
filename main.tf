@@ -8,14 +8,29 @@ terraform {
 }
 
 provider "postgresql" {
-  host            = "localhost"
-  port            = 5522
+  host            = var.pg_host
+  port            = var.pg_port
   database        = "postgres"
-  username        = "postgres"
-  password        = "postgres"
+  username        = var.pg_admin_user
+  password        = var.pg_admin_password
   sslmode         = "disable"
+  connect_timeout = 30
 }
 
-resource "postgresql_database" "mydb" {
-  name = "terraformdb"
+resource "postgresql_role" "appuser" {
+  name     = var.app_user
+  login    = true
+  password = var.app_password
+}
+
+resource "postgresql_database" "terraformdb" {
+  name  = var.db_name
+  owner = postgresql_role.appuser.name
+}
+
+resource "postgresql_grant" "db_connect" {
+  database    = postgresql_database.terraformdb.name
+  role        = postgresql_role.appuser.name
+  object_type = "database"
+  privileges  = ["CONNECT"]
 }
