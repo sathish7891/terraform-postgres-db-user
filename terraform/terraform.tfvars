@@ -2,19 +2,29 @@ pg_admin_password = "Postgres"
 
 app_password      = "AppUser123"
 
-databases = {
+variable "databases" {
+type = map(object({
+users = map(string)
+}))
+
+default = {
   appdb = {
-    username = "appuser1"
-    password = "App@123"
+   users = {
+    appuser = "appuser1"
+    appreadonly = "Appread@123"
+    sathish = "root123"
   }
-
+}
   testdb = {
-    username = "testuser"
-    password = "Test@123"
+   users = {
+    testuser = "testuser"
+    testreadonly = "Testread@123"
   }
-
+}
   devdb = {
     username = "devuser"
     password = "Dev@123"
   }
 }
+}
+

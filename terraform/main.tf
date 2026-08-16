@@ -49,3 +49,11 @@ resource "postgresql_database" "databases" {
   name  = each.key
   owner = postgresql_role.users[each.key].name
 }
+
+resource "postgres_grant" "connect" {
+  for_each = local.db_users
+  database = each.value.db_name
+  role = postgres_role.users[each.key].name
+  object_type = "database"
+  privileges = ["CONNECT"]
+}
